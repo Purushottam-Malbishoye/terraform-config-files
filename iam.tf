@@ -67,4 +67,22 @@ resource "aws_iam_policy_attachment" "codepipeline_codebuild_attach" {
   roles      = [aws_iam_role.codepipeline_role.name]
 }
 
+resource "aws_iam_policy" "codebuild_logstream_policy" {
+  name        = "codebuild-logstream-policy"
+  description = "Allow CodeBuild to create log streams"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogStream"
+        ],
+        Resource = [
+          "*"
+        ]
+      }
+    ]
+  })
+}
 
