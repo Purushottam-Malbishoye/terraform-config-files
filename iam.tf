@@ -40,3 +40,31 @@ resource "aws_iam_policy_attachment" "ecs_task_policy" {
   roles      = [aws_iam_role.ecs_task_execution_role.name]
 }
 
+resource "aws_iam_policy" "codepipeline_codebuild_policy" {
+  name        = "codepipeline-codebuild-policy"
+  description = "Allow CodePipeline to interact with CodeBuild"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds",
+          "codebuild:BatchGetProjects",
+          "codebuild:ListBuilds",
+          "codebuild:ListBuildsForProject"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "codepipeline_codebuild_attach" {
+  name       = "codepipeline-codebuild-attach"
+  policy_arn = aws_iam_policy.codepipeline_codebuild_policy.arn
+  roles      = [aws_iam_role.codepipeline_role.name]
+}
+
+
